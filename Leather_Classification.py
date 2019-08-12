@@ -133,7 +133,9 @@ for training_name in train_labels:
 # In[ ]:
 
 
-get_ipython().run_cell_magic('time', '', "targetNames = np.unique(labels)\nle = LabelEncoder()\ntarget = le.fit_transform(labels)\n\n\n# normalize the feature vector in the range (0-1)\nscaler = MinMaxScaler(feature_range=(0, 1))\nrescaled_features = scaler.fit_transform(global_features)\n\n\n# save the feature vector using HDF5\nh5f_data = h5py.File('Desktop\\\\LIMG\\\\Output\\\\data.h5', 'w')\nh5f_data.create_dataset('dataset_1', data=np.array(rescaled_features))\n\nh5f_label = h5py.File('Desktop\\\\LIMG\\\\Output\\\\labels.h5', 'w')\nh5f_label.create_dataset('dataset_1', data=np.array(target))\n\nh5f_data.close()\nh5f_label.close()")
+get_ipython().run_cell_magic('time', '', "targetNames = np.unique(labels)\nle = LabelEncoder()\ntarget = le.fit_transform(labels)\n\n\n# normalize the feature vector in the range (0-1)\nscaler = MinMaxScaler(feature_range=(0, 1))\nrescaled_features
+                             = scaler.fit_transform(global_features)\n\n\n# save the feature vector using HDF5\nh5f_data 
+                             = h5py.File('Desktop\\\\LIMG\\\\Output\\\\data.h5', 'w')\nh5f_data.create_dataset('dataset_1', data=np.array(rescaled_features))\n\nh5f_label = h5py.File('Desktop\\\\LIMG\\\\Output\\\\labels.h5', 'w')\nh5f_label.create_dataset('dataset_1', data=np.array(target))\n\nh5f_data.close()\nh5f_label.close()")
 
 
 # In[ ]:
@@ -190,7 +192,8 @@ h5f_label.close()
 #test the trained model with the unseen test_data. The split size is decided by the test_size parameter.
 
 
-(trainDataGlobal, testDataGlobal, trainLabelsGlobal, testLabelsGlobal) = train_test_split(np.array(global_features), np.array(global_labels), test_size=test_size, random_state=seed)
+(trainDataGlobal, testDataGlobal, trainLabelsGlobal, testLabelsGlobal)
+                        = train_test_split(np.array(global_features), np.array(global_labels), test_size=test_size, random_state=seed)
                                                                                           
 
 
@@ -205,13 +208,16 @@ models.append(('RF', RandomForestClassifier(n_estimators=num_trees, random_state
 # In[ ]:
 
 
-get_ipython().run_cell_magic('time', '', '# filter all the warnings\nimport warnings\nwarnings.filterwarnings(\'ignore\')\n# go through random forest alggorithm and print accuracy\n#more models can be added in the models[] variable to compare accuracy\nfor name, model in models:\n    kfold = KFold(n_splits=10, random_state=7)\n    cv_results = cross_val_score(model, trainDataGlobal, trainLabelsGlobal, cv=kfold, scoring=scoring)\n    results.append(cv_results)\n    names.append(name)\n    msg = "%s: %f (%f)" % (name, cv_results.mean(), cv_results.std())\n    print(msg)')
+get_ipython().run_cell_magic('time', '', '# filter all the warnings\nimport warnings\nwarnings.filterwarnings(\'ignore\')\n# go through random forest alggorithm and print accuracy\n#more models can be added in the models[] variable to compare accuracy\nfor name, model in models:\n    kfold = KFold(n_splits=10, random_state=7)\n    
+ cv_results = cross_val_score(model, trainDataGlobal, trainLabelsGlobal, cv=kfold, scoring=scoring)\n    results.append(cv_results)\n    names.append(name)\n    msg = "%s: %f (%f)" % (name, cv_results.mean(), cv_results.std())\n    print(msg)')
 
 
 # In[ ]:
 
 
-get_ipython().run_cell_magic('time', '', 'import matplotlib.pyplot as plt\n\nclf  = RandomForestClassifier(n_estimators=100, random_state=9)\n\n\nclf.fit(trainDataGlobal, trainLabelsGlobal)\n\n# path to validation data\ntest_path = "Desktop\\Test"\n\n#extract features of each validation image\nfor file in glob.glob(test_path + "\\*.jpg"):\n  \n    image = cv2.imread(file)\n\n\n    image = cv2.resize(image, fixed_size)\n\n\n    fv_hu_moments = fd_hu_moments(image)\n    fv_haralick   = fd_haralick(image)\n    fv_histogram  = fd_histogram(image)\n\n\n    global_feature = np.hstack([fv_histogram, fv_haralick, fv_hu_moments])\n\n    #predict output using clf.fit()\n    prediction = clf.predict(global_feature.reshape(1,-1))[0]\n\n    print("File Name: "+file)\n    #output prediction\n    print(train_labels[prediction], ":")\n    image = cv2.resize(image, (2000,2000))\n    plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))\n    plt.show()\n    print("\\n \\n \\n")')
+get_ipython().run_cell_magic('time', '', 'import matplotlib.pyplot as plt\n\nclf 
+= RandomForestClassifier(n_estimators=100, random_state=9)\n\n\nclf.fit(trainDataGlobal, trainLabelsGlobal)\n\n# path to validation data\ntest_path 
+                             = "Desktop\\Test"\n\n#extract features of each validation image\nfor file in glob.glob(test_path + "\\*.jpg"):\n  \n    image = cv2.imread(file)\n\n\n    image = cv2.resize(image, fixed_size)\n\n\n    fv_hu_moments = fd_hu_moments(image)\n    fv_haralick   = fd_haralick(image)\n    fv_histogram  = fd_histogram(image)\n\n\n    global_feature = np.hstack([fv_histogram, fv_haralick, fv_hu_moments])\n\n    #predict output using clf.fit()\n    prediction = clf.predict(global_feature.reshape(1,-1))[0]\n\n    print("File Name: "+file)\n    #output prediction\n    print(train_labels[prediction], ":")\n    image = cv2.resize(image, (2000,2000))\n    plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))\n    plt.show()\n    print("\\n \\n \\n")')
 
 
 # In[ ]:
